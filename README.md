@@ -1,2 +1,3 @@
-# Let-s-Implement-Basic-Linux-Commands
+# Let's Implement: Basic Linux Commands in C
+
 C implementation of basic linux commands like ls, mv, cp, grep...
