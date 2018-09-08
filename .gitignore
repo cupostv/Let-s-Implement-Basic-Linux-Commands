@@ -7,6 +7,9 @@
 *.obj
 *.elf
 
+# Binaries folder
+binaries
+
 # Linker output
 *.ilk
 *.map
