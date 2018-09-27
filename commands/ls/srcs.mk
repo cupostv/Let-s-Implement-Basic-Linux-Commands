@@ -1,3 +1,3 @@
 SRC := main.c
-LIB :=
+LIB := -L$(BINARIES_PATH) -lcommon
 INC := -I$(COMMON_PATH)
