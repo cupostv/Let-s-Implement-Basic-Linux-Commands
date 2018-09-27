@@ -4,6 +4,14 @@
 #include <dirent.h>
 #include "common.h"
 
+static int32_t dirComparator(void* a, void* b)
+{
+    struct dirent* aa = (struct dirent*)a;
+    struct dirent* bb = (struct dirent*)b;
+
+    return strcasecmp(aa->d_name, bb->d_name);
+}
+
 int main(int argc, char** argv)
 {
     char* dir = NULL;
@@ -43,6 +51,8 @@ int main(int argc, char** argv)
         /* Creating copy of the directory so I can manipulate with it */
         LList_insert((LList* const)dirList, (void*)curFile, sizeof(struct dirent));
     }
+
+    LList_bSort(dirList, dirComparator);
 
     temp = dirList;
 

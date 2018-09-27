@@ -44,6 +44,17 @@ int32_t LList_insert(LList* const list, void* data, size_t size);
 uint32_t LList_getSize(const LList* const list);
 
 /**
+ * \brief Sort the list.
+ *        This function sorts the list in order passid with comparator function.
+ *
+ * \param list - List which will be sorted
+ * \param comp - Comparator function which will be used for sorting
+ *
+ * \ret   void
+ */
+void LList_bSort(LList* list, int32_t (*comp)(void*, void*));
+
+/**
  * \brief Free list.
  *
  * \param list - List which should be freed

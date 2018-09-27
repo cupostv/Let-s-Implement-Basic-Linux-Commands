@@ -12,6 +12,13 @@ static LList* getLastFreeElement(const LList* const list)
     return res;
 }
 
+static void LList_swap(LList* a, LList* b)
+{
+    void* temp = a->data;
+    a->data = b->data;
+    b->data = temp;
+}
+
 LList* LList_create(void)
 {
     LList* list = malloc(sizeof(LList));
@@ -59,6 +66,33 @@ uint32_t LList_getSize(const LList* const list)
     }
 
     return size;
+}
+
+void LList_bSort(LList* list, int32_t (*comp)(void*, void*))
+{
+    int32_t size = 0;
+    int32_t i = 0;
+    int32_t j = 0;
+    LList* temp = NULL;
+    if (list == NULL)
+    {
+        return;
+    }
+    size = (int32_t)LList_getSize(list);
+
+    for (i = 0; i < size - 1; i++)
+    {
+        temp = list;
+        for (j = 0; j < size - i - 1; j++, temp = temp->next)
+        {
+            LList* a = temp;
+            LList* b = temp->next;
+            if( comp(a->data, b->data) > 0 )
+            {
+                LList_swap(a, b);
+            }
+        }
+    }
 }
 
 void LList_free(LList** list)
