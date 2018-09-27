@@ -15,4 +15,14 @@
  */
 uint32_t getTerminalWidth(void);
 
+/**
+ * \brief Print ammount of spaces.
+ *        This function prints \a ammount of spaces to a terminal.
+ *
+ * \param ammount - Ammount of spaces about to be printed.
+ *
+ * \ret   void
+ */
+void printSpaces(uint32_t ammount);
+
 #endif

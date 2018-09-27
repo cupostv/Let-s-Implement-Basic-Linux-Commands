@@ -95,6 +95,19 @@ void LList_bSort(LList* list, int32_t (*comp)(void*, void*))
     }
 }
 
+void* LList_get(const LList* const list , uint32_t index)
+{
+    LList* temp = (LList*)list;
+
+    while( index > 0 && temp->data != NULL )
+    {
+        temp = temp->next;
+        index--;
+    }
+
+    return temp->data;
+}
+
 void LList_free(LList** list)
 {
     LList* cur = *list;

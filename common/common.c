@@ -10,3 +10,12 @@ uint32_t getTerminalWidth(void)
 
     return status == -1 ? 0 : term.ws_col;
 }
+
+void printSpaces(uint32_t ammount)
+{
+    while( ammount > 0 )
+    {
+        printf(" ");
+        ammount--;
+    }
+}

@@ -55,6 +55,17 @@ uint32_t LList_getSize(const LList* const list);
 void LList_bSort(LList* list, int32_t (*comp)(void*, void*));
 
 /**
+ * \brief Get a element from the list.
+ *        This function returns data element from the list.
+ *
+ * \param list  - List where data is stored
+ * \param index - Index of the data element
+ *
+ * \ret   void* - Pointer to a data element stored in the list.
+ */
+void* LList_get(const LList* const list, uint32_t index);
+
+/**
  * \brief Free list.
  *
  * \param list - List which should be freed

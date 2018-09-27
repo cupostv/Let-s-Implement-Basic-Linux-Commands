@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <dirent.h>
-#include "common.h"
+#include "ls_utils.h"
 
 static int32_t dirComparator(void* a, void* b)
 {
@@ -48,37 +48,20 @@ int main(int argc, char** argv)
 
     while(( curFile = readdir(lsDir)) != NULL )
     {
-        /* Creating copy of the directory so I can manipulate with it */
-        LList_insert((LList* const)dirList, (void*)curFile, sizeof(struct dirent));
+        if( strcmp(".", curFile->d_name) != 0 &&
+            strcmp("..", curFile->d_name) != 0 &&
+            curFile->d_name[0] != '.' )
+        {
+            /* Creating copy of the directory so I can manipulate with it */
+            LList_insert((LList* const)dirList, (void*)curFile, sizeof(struct dirent));
+        }
     }
 
     LList_bSort(dirList, dirComparator);
-
-    temp = dirList;
-
-    while( NULL != temp && NULL != temp->data )
-    {
-        struct dirent* el = (struct dirent*)temp->data;
-        if( strcmp(".", el->d_name) != 0 &&
-            strcmp("..", el->d_name) != 0 &&
-            el->d_name[0] != '.' )
-        {
-            switch( el->d_type )
-            {
-                case DT_DIR:
-                    printf(BOLDBLUE "%s\t" RESET, el->d_name);
-                    break;
-                default:
-                    printf("%s\t", el->d_name);
-                    break;
-            }
-        }
-        temp = temp->next;
-    }
+    ls_output(dirList, terminalWidth);
 
     closedir(lsDir);
     LList_free(&dirList);
 
-    printf("\n");
     return EXIT_SUCCESS;
 }
