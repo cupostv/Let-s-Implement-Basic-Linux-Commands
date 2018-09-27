@@ -9,8 +9,9 @@ int main(int argc, char** argv)
     char* dir = NULL;
     DIR* lsDir = NULL;
     struct dirent* curFile;
+    uint32_t terminalWidth = 0;
 
-    if( argc == 1 )
+    if( 1 == argc )
     {
         dir = ".";
     }
@@ -21,10 +22,16 @@ int main(int argc, char** argv)
     }
 
     lsDir = opendir(dir);
-
     if( NULL == lsDir )
     {
         printf("ls: cannot access '%s': No such file or directory\n", dir);
+        return EXIT_FAILURE;
+    }
+
+    terminalWidth = getTerminalWidth();
+    if( 0U == terminalWidth )
+    {
+        printf("ls: error occured\n");
         return EXIT_FAILURE;
     }
 
