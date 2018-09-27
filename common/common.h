@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include "ccodes.h"
+#include "llist.h"
 
 /**
  * \brief Get current width of terminal.

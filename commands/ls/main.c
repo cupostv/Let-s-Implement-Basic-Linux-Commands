@@ -10,6 +10,8 @@ int main(int argc, char** argv)
     DIR* lsDir = NULL;
     struct dirent* curFile;
     uint32_t terminalWidth = 0;
+    LList* dirList = NULL;
+    LList* temp = NULL;
 
     if( 1 == argc )
     {
@@ -28,6 +30,7 @@ int main(int argc, char** argv)
         return EXIT_FAILURE;
     }
 
+    dirList = LList_create();
     terminalWidth = getTerminalWidth();
     if( 0U == terminalWidth )
     {
@@ -37,26 +40,34 @@ int main(int argc, char** argv)
 
     while(( curFile = readdir(lsDir)) != NULL )
     {
-        if( strcmp(".", curFile->d_name) != 0 &&
-            strcmp("..", curFile->d_name) != 0 &&
-            curFile->d_name[0] != '.' )
+        /* Creating copy of the directory so I can manipulate with it */
+        LList_insert((LList* const)dirList, (void*)curFile, sizeof(struct dirent));
+    }
+
+    temp = dirList;
+
+    while( NULL != temp && NULL != temp->data )
+    {
+        struct dirent* el = (struct dirent*)temp->data;
+        if( strcmp(".", el->d_name) != 0 &&
+            strcmp("..", el->d_name) != 0 &&
+            el->d_name[0] != '.' )
         {
-            switch( curFile->d_type )
+            switch( el->d_type )
             {
                 case DT_DIR:
-                    printf(BOLDBLUE "%s\t" RESET, curFile->d_name);
-                    break;
-                case DT_REG:
-                    printf("%s\t", curFile->d_name);
+                    printf(BOLDBLUE "%s\t" RESET, el->d_name);
                     break;
                 default:
+                    printf("%s\t", el->d_name);
                     break;
             }
-
         }
+        temp = temp->next;
     }
 
     closedir(lsDir);
+    LList_free(&dirList);
 
     printf("\n");
     return EXIT_SUCCESS;
