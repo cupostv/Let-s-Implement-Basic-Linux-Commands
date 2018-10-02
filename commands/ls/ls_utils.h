@@ -2,6 +2,33 @@
 #define _LS_UTILS_H_
 
 #include "common.h"
+#include <dirent.h>
+
+typedef enum
+{
+    TYPE_DIRECTORY,
+    TYPE_EXECUTABLE,
+    TYPE_OTHER
+} DirType;
+
+typedef struct
+{
+    LList* dirList;
+    char* dirPath;
+    uint32_t dirSize;
+    DIR* lsDir;
+} LSDir;
+
+/**
+ * \brief Open directory.
+ *        This function opens and reads a directory.
+ *
+ * \param path - Path to the directory/file
+ * \param showHiddenFiles - Indicator which shows if hidden files should be shown
+ *
+ * \ret   LSDir* - Pointer to created LSDir structure.
+ */
+LSDir* ls_openDir(char* path, uint32_t showHiddenFiles);
 
 /**
  * \brief Print directory/file name.
@@ -21,11 +48,21 @@ void ls_print(char* name, uint32_t type);
  *        This function prints directories stored in the list in nice
  *        looking table view.
  *
- * \param dirList - List which represents directory
+ * \param lsDir - Struct which represents directory
  * \param terminalWidth - Current width of the terminal
  *
  * \ret   void
  */
-void ls_output(LList* dirList, uint32_t terminalWidth);
+void ls_output(LSDir* lsDir, uint32_t terminalWidth);
+
+/**
+ * \brief Free a directory.
+ *        Call this function at the end of the program.
+ *
+ * \param dir - Struct which represents directory and should be freed.
+ *
+ * \ret   void
+ */
+void ls_freeDir(LSDir* dir);
 
 #endif

@@ -87,7 +87,7 @@ void LList_bSort(LList* list, int32_t (*comp)(void*, void*))
         {
             LList* a = temp;
             LList* b = temp->next;
-            if( comp(a->data, b->data) > 0 )
+            if( comp(a->data, b->data) >= 0 )
             {
                 LList_swap(a, b);
             }
