@@ -34,3 +34,15 @@ Figure below shows output example of custom ls command on a home directory.
     <i>Figure 2: Output example of custom ls command</i>
     <img src="https://i.imgur.com/ArT1z3W.png" alt="Custom ls" width="70%"> 
 </p>
+
+Figure below shows output example of original linux ls command on a Downloads directory.
+<p align="center">
+    <i>Figure 3: Output example of original ls command</i>
+    <img src="https://i.imgur.com/vORRNno.png" alt="Original ls" width="70%"> 
+</p>
+
+Figure below shows output example of custom ls command on a Downloads directory.
+<p align="center">
+    <i>Figure 4: Output example of custom ls command</i>
+    <img src="https://i.imgur.com/jKjI9D1.png" alt="Custom ls" width="70%"> 
+</p>
