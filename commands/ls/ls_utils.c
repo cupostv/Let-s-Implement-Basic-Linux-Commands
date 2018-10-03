@@ -1,6 +1,15 @@
 #include "ls_utils.h"
 #include <ctype.h>
 
+static char* imgExt[] = \
+{
+    ".jpg",
+    ".png",
+    ".bmp"
+};
+
+#define IMGEXT_SIZE (sizeof(imgExt) / sizeof(char*))
+
 static void strcpyIgnoreSpecial(char* dest, char* src)
 {
     uint32_t i = 0;
@@ -107,6 +116,9 @@ void ls_print(char* name, DirType type)
         case TYPE_EXECUTABLE:
             printf(BOLDGREEN "%s" RESET, name);
             break;
+        case TYPE_IMAGE:
+            printf(BOLDMAGENTA "%s" RESET, name);
+            break;
         default:
             printf("%s", name);
             break;
@@ -121,7 +133,7 @@ void ls_output(LSDir* lsDir, uint32_t terminalWidth)
     uint8_t isFound = 0U;
     uint32_t col = 0U;
     uint32_t row = 0U;
-    uint32_t size = lsDir->dirSize;
+    const uint32_t size = lsDir->dirSize;
     uint32_t* maxLookup = malloc(size * sizeof(uint32_t));
     LList* idx = NULL;
 
@@ -173,7 +185,7 @@ void ls_output(LSDir* lsDir, uint32_t terminalWidth)
                 break;
             }
             getDirStat(&s, lsDir->dirPath, el->d_name);
-            ls_print(el->d_name, ls_getDirType(&s));
+            ls_print(el->d_name, ls_getDirType(&s, el->d_name));
             if (maxLookup[col] < terminalWidth)
             {
                 printSpaces(maxLookup[col] - strlen(el->d_name) + (col == colNum - 1 ? 0 : 2));
@@ -185,7 +197,28 @@ void ls_output(LSDir* lsDir, uint32_t terminalWidth)
     free(maxLookup);
 }
 
-DirType ls_getDirType(struct stat* s)
+static int32_t isImage(char* str)
+{
+    char* ext = strchr(str, '.');
+    int i = 0;
+
+    if( NULL == ext )
+    {
+        return -1;
+    }
+
+    for( i = 0; i < IMGEXT_SIZE; i++ )
+    {
+        if( strcmp(ext, imgExt[i]) == 0 )
+        {
+            return 0;
+        }
+    }
+
+    return -1;
+}
+
+DirType ls_getDirType(struct stat* s, char* name)
 {
     if( S_ISDIR(s->st_mode) )
     {
@@ -194,6 +227,10 @@ DirType ls_getDirType(struct stat* s)
     else if( s->st_mode & S_IXUSR )
     {
         return TYPE_EXECUTABLE;
+    }
+    else if( isImage(name) == 0 )
+    {
+        return TYPE_IMAGE;
     }
     else
     {

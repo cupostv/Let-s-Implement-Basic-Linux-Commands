@@ -9,6 +9,7 @@ typedef enum
 {
     TYPE_DIRECTORY,
     TYPE_EXECUTABLE,
+    TYPE_IMAGE,
     TYPE_OTHER
 } DirType;
 
@@ -61,10 +62,11 @@ void ls_output(LSDir* lsDir, uint32_t terminalWidth);
  *        This type returns type of a directory.
  *
  * \param s - Struct which is created with getDirStat function.
+ * \param name - Name of the file/dir.
  *
  * \ret   DirType - Type of a file/directory.
  */
-DirType ls_getDirType(struct stat* s);
+DirType ls_getDirType(struct stat* s, char* name);
 
 /**
  * \brief Free a directory.
