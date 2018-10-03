@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include "ccodes.h"
 #include "llist.h"
+#include <sys/stat.h>
 
 /**
  * \brief Get current width of terminal.
@@ -23,6 +24,19 @@ uint32_t getTerminalWidth(void);
  *
  * \ret   void
  */
-void printSpaces(uint32_t ammount);
+void printSpaces(int32_t ammount);
+
+/**
+ * \brief Get stat of a directory/file.
+ *        This function returns stat structure (passed as argument) for the
+ *        path/filename.
+ *
+ * \param s - Output argument. It will be filled by the function.
+ * \param path - Absolute or relative path
+ * \param filename - Name of the file/folder
+ *
+ * \ret   void
+ */
+void getDirStat(struct stat* s, char* path, char* filename);
 
 #endif

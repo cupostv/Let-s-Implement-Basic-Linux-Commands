@@ -62,6 +62,7 @@ LSDir* ls_openDir(char* path, uint32_t showHiddenFiles)
     if( NULL == lsDir )
     {
         printf("ls: cannot access '%s': No such file or directory\n", path);
+        return NULL;
     }
 
     res = malloc(sizeof(LSDir));
@@ -69,6 +70,7 @@ LSDir* ls_openDir(char* path, uint32_t showHiddenFiles)
     res->dirList = LList_create();
     res->lsDir = lsDir;
     res->dirSize = 0U;
+    res->dirPath = path;
 
     if( 1U == showHiddenFiles )
     {
@@ -95,12 +97,15 @@ LSDir* ls_openDir(char* path, uint32_t showHiddenFiles)
     return res;
 }
 
-void ls_print(char* name, uint32_t type)
+void ls_print(char* name, DirType type)
 {
     switch( type )
     {
-        case DT_DIR:
+        case TYPE_DIRECTORY:
             printf(BOLDBLUE "%s" RESET, name);
+            break;
+        case TYPE_EXECUTABLE:
+            printf(BOLDGREEN "%s" RESET, name);
             break;
         default:
             printf("%s", name);
@@ -143,28 +148,17 @@ void ls_output(LSDir* lsDir, uint32_t terminalWidth)
         for( col = 0U; col < colNum; col++ )
         {
             uint32_t max = 0;
-            for( row = 0U; row < outRows; row++, idx = idx->next )
+            for( row = 0U; row < outRows && idx->data != NULL; row++, idx = idx->next )
             {
                 struct dirent* el = (struct dirent*)idx->data;
                 uint32_t len = 0;
-                if( NULL == el )
-                {
-                    break;
-                }
                 len = strlen(el->d_name);
                 max = len > max ? len : max;
             }
-            rowWidth += max + 1U;
-            if( col < colNum - 1 )
-            {
-                rowWidth += 1U;
-            }
+            rowWidth += max + 1U + (col < colNum - 1);
             maxLookup[col] = max;
         }
-        if( rowWidth <= terminalWidth || outRows == size )
-        {
-            isFound = 1;
-        }
+        isFound = rowWidth <= terminalWidth || outRows == size;
     }
 
     idx = lsDir->dirList;
@@ -173,11 +167,13 @@ void ls_output(LSDir* lsDir, uint32_t terminalWidth)
         for( col = 0; col < colNum; col++)
         {
             struct dirent* el = (struct dirent*)LList_get(lsDir->dirList, row + col * outRows);
+            struct stat s;
             if( el == NULL)
             {
                 break;
             }
-            ls_print(el->d_name, el->d_type);
+            getDirStat(&s, lsDir->dirPath, el->d_name);
+            ls_print(el->d_name, ls_getDirType(&s));
             if (maxLookup[col] < terminalWidth)
             {
                 printSpaces(maxLookup[col] - strlen(el->d_name) + (col == colNum - 1 ? 0 : 2));
@@ -187,6 +183,22 @@ void ls_output(LSDir* lsDir, uint32_t terminalWidth)
     }
 
     free(maxLookup);
+}
+
+DirType ls_getDirType(struct stat* s)
+{
+    if( S_ISDIR(s->st_mode) )
+    {
+        return TYPE_DIRECTORY;
+    }
+    else if( s->st_mode & S_IXUSR )
+    {
+        return TYPE_EXECUTABLE;
+    }
+    else
+    {
+        return TYPE_OTHER;
+    }
 }
 
 void ls_freeDir(LSDir* dir)

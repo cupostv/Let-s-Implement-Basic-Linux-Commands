@@ -3,6 +3,7 @@
 
 #include "common.h"
 #include <dirent.h>
+#include <sys/stat.h>
 
 typedef enum
 {
@@ -41,7 +42,7 @@ LSDir* ls_openDir(char* path, uint32_t showHiddenFiles);
  *
  * \ret   void
  */
-void ls_print(char* name, uint32_t type);
+void ls_print(char* name, DirType type);
 
 /**
  * \brief Output directory as a table.
@@ -54,6 +55,16 @@ void ls_print(char* name, uint32_t type);
  * \ret   void
  */
 void ls_output(LSDir* lsDir, uint32_t terminalWidth);
+
+/**
+ * \brief Get type of a directory.
+ *        This type returns type of a directory.
+ *
+ * \param s - Struct which is created with getDirStat function.
+ *
+ * \ret   DirType - Type of a file/directory.
+ */
+DirType ls_getDirType(struct stat* s);
 
 /**
  * \brief Free a directory.
