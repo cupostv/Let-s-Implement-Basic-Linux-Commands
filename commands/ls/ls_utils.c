@@ -71,7 +71,6 @@ LSDir* ls_openDir(char* path, bool showHiddenFiles)
 
     if( NULL == lsDir )
     {
-        printf("ls: cannot access '%s': No such file or directory\n", path);
         return NULL;
     }
 
