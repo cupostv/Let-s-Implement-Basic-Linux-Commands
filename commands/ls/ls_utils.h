@@ -30,7 +30,7 @@ typedef struct
  *
  * \ret   LSDir* - Pointer to created LSDir structure.
  */
-LSDir* ls_openDir(char* path, uint32_t showHiddenFiles);
+LSDir* ls_openDir(char* path, bool showHiddenFiles);
 
 /**
  * \brief Print directory/file name.
@@ -66,7 +66,7 @@ void ls_output(LSDir* lsDir, uint32_t terminalWidth);
  *
  * \ret   DirType - Type of a file/directory.
  */
-DirType ls_getDirType(struct stat* s, char* name);
+DirType ls_getDirType(const struct stat* const s, const char* name);
 
 /**
  * \brief Free a directory.

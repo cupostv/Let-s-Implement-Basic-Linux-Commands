@@ -20,7 +20,7 @@ int main(int argc, char** argv)
         dir = argv[1];
     }
 
-    lsDir = ls_openDir(dir, 0U);
+    lsDir = ls_openDir(dir, false);
     if( NULL == lsDir )
     {
         printf("ls: cannot access '%s': No such file or directory\n", dir);

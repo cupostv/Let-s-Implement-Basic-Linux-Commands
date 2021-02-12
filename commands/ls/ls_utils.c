@@ -1,19 +1,19 @@
 #include "ls_utils.h"
 #include <ctype.h>
 
-static char* imgExt[] = \
+static const char* const imgExt[] = \
 {
     ".jpg",
     ".png",
-    ".bmp"
+    ".bmp",
+    ".gif"
 };
 
 #define IMGEXT_SIZE (sizeof(imgExt) / sizeof(char*))
 
-static void strcpyIgnoreSpecial(char* dest, char* src)
+static void strcpyIgnoreSpecial(char* dest, const char* const src)
 {
     uint32_t i = 0;
-    uint32_t len = strlen(src);
     char c;
 
     while( (c = src[i++]) != '\0' )
@@ -58,16 +58,17 @@ static int32_t dirComparator(void* a, void* b)
     result = strcasecmp(cmpA, cmpB);
     free(cmpA);
     free(cmpB);
+
     return result;
 }
 
-LSDir* ls_openDir(char* path, uint32_t showHiddenFiles)
+LSDir* ls_openDir(char* path, bool showHiddenFiles)
 {
     LSDir* res = NULL;
-    DIR* lsDir = NULL;
     struct dirent* curFile = NULL;
 
-    lsDir = opendir(path);
+    DIR* lsDir = opendir(path);
+
     if( NULL == lsDir )
     {
         printf("ls: cannot access '%s': No such file or directory\n", path);
@@ -81,7 +82,7 @@ LSDir* ls_openDir(char* path, uint32_t showHiddenFiles)
     res->dirSize = 0U;
     res->dirPath = path;
 
-    if( 1U == showHiddenFiles )
+    if( showHiddenFiles == true )
     {
         while(( curFile = readdir(lsDir)) != NULL )
         {
@@ -130,19 +131,20 @@ void ls_output(LSDir* lsDir, uint32_t terminalWidth)
     uint32_t outRows = 0;
     uint32_t rowWidth = 0;
     uint32_t colNum = 0;
-    uint8_t isFound = 0U;
     uint32_t col = 0U;
     uint32_t row = 0U;
     const uint32_t size = lsDir->dirSize;
     uint32_t* maxLookup = malloc(size * sizeof(uint32_t));
     LList* idx = NULL;
 
+    bool isFound = false;
+
     if( 0U == size )
     {
         return;
     }
 
-    while( 0U == isFound )
+    while( isFound == false )
     {
         do
         {
@@ -188,7 +190,7 @@ void ls_output(LSDir* lsDir, uint32_t terminalWidth)
             ls_print(el->d_name, ls_getDirType(&s, el->d_name));
             if (maxLookup[col] < terminalWidth)
             {
-                printSpaces(maxLookup[col] - strlen(el->d_name) + (col == colNum - 1 ? 0 : 2));
+                PRINT_SPACES(maxLookup[col] - (uint32_t)strlen(el->d_name) + (col == colNum - 1 ? 0U : 2U));
             }
         }
         printf("\n");
@@ -197,28 +199,28 @@ void ls_output(LSDir* lsDir, uint32_t terminalWidth)
     free(maxLookup);
 }
 
-static int32_t isImage(char* str)
+static bool isImage(const char* str)
 {
     char* ext = strchr(str, '.');
-    int i = 0;
+    uint32_t i = 0;
 
     if( NULL == ext )
     {
-        return -1;
+        return false;
     }
 
     for( i = 0; i < IMGEXT_SIZE; i++ )
     {
         if( strcmp(ext, imgExt[i]) == 0 )
         {
-            return 0;
+            return true;
         }
     }
 
-    return -1;
+    return false;
 }
 
-DirType ls_getDirType(struct stat* s, char* name)
+DirType ls_getDirType(const struct stat* const s, const char* name)
 {
     if( S_ISDIR(s->st_mode) )
     {
@@ -228,7 +230,7 @@ DirType ls_getDirType(struct stat* s, char* name)
     {
         return TYPE_EXECUTABLE;
     }
-    else if( isImage(name) == 0 )
+    else if( isImage(name) == true )
     {
         return TYPE_IMAGE;
     }

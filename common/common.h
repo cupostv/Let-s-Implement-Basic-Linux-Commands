@@ -2,9 +2,13 @@
 #define _COMMON_H_
 
 #include <stdint.h>
+#include <stdbool.h>
+#include <sys/stat.h>
+
 #include "ccodes.h"
 #include "llist.h"
-#include <sys/stat.h>
+
+#define PRINT_SPACES(ammount) printf("%*s", ammount, "")
 
 /**
  * \brief Get current width of terminal.
@@ -17,16 +21,6 @@
 uint32_t getTerminalWidth(void);
 
 /**
- * \brief Print ammount of spaces.
- *        This function prints \a ammount of spaces to a terminal.
- *
- * \param ammount - Ammount of spaces about to be printed.
- *
- * \ret   void
- */
-void printSpaces(int32_t ammount);
-
-/**
  * \brief Get stat of a directory/file.
  *        This function returns stat structure (passed as argument) for the
  *        path/filename.
@@ -37,6 +31,6 @@ void printSpaces(int32_t ammount);
  *
  * \ret   void
  */
-void getDirStat(struct stat* s, char* path, char* filename);
+void getDirStat(struct stat* s, const char* const path, const char* const filename);
 
 #endif

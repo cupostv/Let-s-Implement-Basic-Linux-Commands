@@ -11,16 +11,7 @@ uint32_t getTerminalWidth(void)
     return status == -1 ? 0 : term.ws_col;
 }
 
-void printSpaces(int32_t ammount)
-{
-    while( ammount > 0 )
-    {
-        printf(" ");
-        ammount--;
-    }
-}
-
-void getDirStat(struct stat* s, char* path, char* filename)
+void getDirStat(struct stat* s, const char* const path, const char* const filename)
 {
     char* fullPath = (char*)malloc((strlen(path) + strlen(filename) + 2) * sizeof(char));
 
